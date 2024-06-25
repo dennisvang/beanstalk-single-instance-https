@@ -25,7 +25,7 @@ Minimal example of https (tls) setup for an application running in a *single-ins
    - In `.platform/hooks/prebuild/00_https_certbot.sh` replace `<your-domain>` by the instance domain, and replace `<your-email>` by a valid email address.
    - In `.platform/nginx/conf.d/https.conf` replace `<your-domain>` by the instance domain
 5. Commit changes and deploy to Elastic Beanstalk.
-
+6. Visit your site to see the result.
 
 [1]: https://certbot.eff.org/
 [2]: https://letsencrypt.org/
