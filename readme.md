@@ -15,6 +15,7 @@ Minimal example of HTTPS (TLS) setup using `certbot`, for an application running
 
 - If you are using a load balanced environment, it is much simpler to [terminate https at the application load balancer][6], with the help of AWS Certificate Manager.
 - This example uses Python, but the configuration should work for other platforms as well.
+- Also see order of configuration steps in [instance deployment workflow][8].
 
 ### Getting started
 
@@ -35,3 +36,4 @@ Minimal example of HTTPS (TLS) setup using `certbot`, for an application running
 [5]: https://nginx.org/en/docs/
 [6]: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https-elb.html
 [7]: .cloudformation/elastic-beanstalk.yml
+[8]: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/platforms-linux-extend.html#platforms-linux-extend.workflow
