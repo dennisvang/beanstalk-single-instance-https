@@ -25,8 +25,8 @@ Minimal example of HTTPS (TLS) setup using `certbot`, for an application running
 2. Copy the instance's `domain`, e.g. from the Elastic Beanstalk console
 3. Clone this repo
 4. Make the following replacements:
-   - In `.platform/hooks/prebuild/00_https_certbot.sh` replace `<your-domain>` by the instance domain, and replace `<your-email>` by a valid email address.
-   - In `.platform/nginx/conf.d/https.conf` replace `<your-domain>` by the instance domain
+   - In `.platform/hooks/prebuild/00_https_certbot.sh` replace `<your-domain>` in the `certbot` call by the instance domain, and replace `<your-email>` by a valid email address.
+   - In `.platform/nginx/conf.d/https.conf` replace `<your-domain>` in the `ssl_certificate` directives by the instance domain
 5. Commit changes and deploy to Elastic Beanstalk.
 6. Visit your site to see the result.
 
