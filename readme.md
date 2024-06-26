@@ -1,20 +1,20 @@
 ## Single-instance HTTPS using certbot
 
-Minimal example of https (tls) setup for an application running in a *single-instance* Elastic Beanstalk environment on AWS.
+Minimal example of HTTPS (TLS) setup using `certbot`, for an application running in a *single-instance* Elastic Beanstalk environment on AWS.
 
-### Highlights
+### Features
 
-- Specifically for ***single-instance*** environments (i.e. *without* load balancer)
-- Uses [Amazon Linux 2023][4]
-- Uses [Nginx][5]
-- Uses a combination of [`.platform`][3] and `.ebextensions` for configuration
-- Uses [`certbot`][1] to obtain certificates automatically from [Let's Encrypt][2]
-- Includes redirect from HTTP to HTTPS
+- specifically for ***single-instance*** environments (i.e. ***without*** load balancer)
+- [Amazon Linux 2023][4]
+- [nginx][5]
+- uses [`certbot`][1] to obtain free certificates automatically from [Let's Encrypt][2]
+- redirects from HTTP to HTTPS
+- mostly [`.platform`][3] and minimal `.ebextensions`
 
 ### Notes
 
 - If you are using a load balanced environment, it is much simpler to [terminate https at the application load balancer][6], with the help of AWS Certificate Manager.
-- This example uses Python, but the config should work for other platforms as well.
+- This example uses Python, but the configuration should work for other platforms as well.
 
 ### Getting started
 
