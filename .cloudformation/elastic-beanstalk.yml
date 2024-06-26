@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  IamInstanceProfile:
+    Type: String
+    Default: "aws-elasticbeanstalk-ec2-role"
+    Description: "https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/iam-instanceprofile.html"
+
+Resources:
+  ApplicationTemp:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticbeanstalk-application.html
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      Description: "Temporary application for testing single-instance HTTPS configuration"
+
+  EnvironmentTemp:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticbeanstalk-environment.html
+    Type: AWS::ElasticBeanstalk::Environment
+    Description: "Temporary environment for testing single-instance HTTPS configuration"
+    Properties:
+      ApplicationName: !Ref ApplicationTemp
+      # https://docs.aws.amazon.com/elasticbeanstalk/latest/platforms/platforms-supported.html#platforms-supported.python
+      SolutionStackName: "64bit Amazon Linux 2023 v4.1.0 running Python 3.11"
+      # https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options-general.html
+      OptionSettings:
+        - Namespace: "aws:autoscaling:launchconfiguration"
+          OptionName: "IamInstanceProfile"
+          Value: !Ref IamInstanceProfile
+        # enforce a launch-template instead of a launch-configuration
+        - Namespace: "aws:autoscaling:launchconfiguration"
+          OptionName: "DisableIMDSv1"
+          Value: "true"
+        - Namespace: "aws:ec2:instances"
+          OptionName: "InstanceTypes"
+          Value: "t4g.micro"
+        - Namespace: "aws:elasticbeanstalk:environment"
+          OptionName: "EnvironmentType"
+          Value: "SingleInstance"
