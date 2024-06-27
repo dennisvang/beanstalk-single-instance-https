@@ -15,6 +15,9 @@ Parameters:
     Type: String
     Default: "aws-elasticbeanstalk-ec2-role"
     Description: "https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/iam-instanceprofile.html"
+  CertbotEmail:
+    Type: String
+    Description: "email address to use for certificate creation using certbot"
 
 Conditions:
   ApplicationNameNotSpecified: !Equals [!Ref ApplicationName, ""]
@@ -55,6 +58,9 @@ Resources:
         - Namespace: "aws:elasticbeanstalk:environment"
           OptionName: "EnvironmentType"
           Value: "SingleInstance"
+        - Namespace: "aws:elasticbeanstalk:application:environment"
+          OptionName: "CERTBOT_EMAIL"
+          Value: !Ref CertbotEmail
 
   ConfigTemplateWithKey:
     Type: AWS::ElasticBeanstalk::ConfigurationTemplate
