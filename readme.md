@@ -11,13 +11,6 @@ Minimal example of HTTPS (TLS) setup using `certbot`, for an application running
 - redirects from HTTP to HTTPS
 - mostly [`.platform`][3] and minimal `.ebextensions`
 
-### Notes
-
-- If you are using a load balanced environment, it is much simpler to [terminate https at the application load balancer][6], with the help of AWS Certificate Manager.
-- This example uses Python, but the configuration should work for other platforms as well.
-- Also see order of configuration steps in [instance deployment workflow][8].
-- To debug certificate issues, you can use e.g. [Let's Debug][9]. 
-
 ### Getting started
 
 1. Spin up a default Elastic Beanstalk web server environment with a single instance running Python on Amazon Linux 2023 (use e.g. the default example app).
@@ -25,6 +18,13 @@ Minimal example of HTTPS (TLS) setup using `certbot`, for an application running
 2. Clone this repo
 3. Deploy to your Elastic Beanstalk environment
 4. Visit your site to see the result
+
+### Notes
+
+- If you are using a load balanced environment, it is much simpler to [terminate https at the application load balancer][6], with the help of AWS Certificate Manager.
+- This example uses Python, but the configuration should work for other platforms as well.
+- Also see order of configuration steps in [instance deployment workflow][8].
+- To debug certificate issues, you can use e.g. [Let's Debug][9]. 
 
 [1]: https://certbot.eff.org/
 [2]: https://letsencrypt.org/
