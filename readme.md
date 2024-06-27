@@ -22,10 +22,9 @@ Minimal example of HTTPS (TLS) setup using `certbot`, for an application running
 
 1. Spin up a default Elastic Beanstalk web server environment with a single instance running Python on Amazon Linux 2023 (use e.g. the default example app).
    For convenience, the `.cloudformation` folder contains a CloudFormation [template][7] that does this for you.
-2. Copy the instance's `domain`, e.g. from the Elastic Beanstalk console
-3. Clone this repo
-4. Deploy to your Elastic Beanstalk environment
-5. Visit your site to see the result
+2. Clone this repo
+3. Deploy to your Elastic Beanstalk environment
+4. Visit your site to see the result
 
 [1]: https://certbot.eff.org/
 [2]: https://letsencrypt.org/
