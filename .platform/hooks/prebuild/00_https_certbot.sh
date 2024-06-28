@@ -15,8 +15,7 @@ BEANSTALK_CNAME=$(aws elasticbeanstalk describe-environments --environment-names
 BEANSTALK_CNAME=${BEANSTALK_CNAME//\"/}
 # make lowercase
 # https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
-# this is necessary, because certbot converts the domain to lowercase for the file path
-# ( although not mentioned in the docs)
+# this is necessary, because certbot converts the domain to lowercase for the file path ( although not mentioned in the docs)
 # https://eff-certbot.readthedocs.io/en/latest/using.html#where-are-my-certificates
 BEANSTALK_CNAME=${BEANSTALK_CNAME,,}
 
@@ -31,11 +30,9 @@ certbot --version
 # also see additional configuration in:
 #   - .ebextensions/https.conf
 #   - .platform/nginx/conf.d/https.conf
-if [[ ! $CERTBOT_EMAIL ]]; then CERTBOT_EMAIL="me@example.org"; fi
-# could just use ${CERTBOT_EMAIL:-me@example.org} inline...
 certbot certonly --nginx -d $BEANSTALK_CNAME -m $CERTBOT_EMAIL --non-interactive --agree-tos
 
-# write nginx ssl_certificate directives for https_server.conf
+# write nginx ssl_certificate directives to include in https_server.conf
 # this is necessary because os environment variables are not available in nginx server blocks
 # (https://stackoverflow.com/a/66013834)
 file_path="/var/app/staging/.platform/nginx/certificate.paths"

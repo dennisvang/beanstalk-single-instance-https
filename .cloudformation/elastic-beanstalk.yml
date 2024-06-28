@@ -4,20 +4,22 @@ Parameters:
   ApplicationName:
     Type: String
     Description: "[optional] name of the application (leave empty to create new application)"
+  CertbotEmail:
+    Type: String
+    Description: "email address to use for certificate creation using certbot"
   EnvironmentName:
     Type: String
-    Description: "[optional] name of the environment (leave empty to generate name)"
+    Description: "name of the environment (4-40 chars)"
+    MinLength: 4
+    MaxLength: 40
   KeyName:
     # use String instead of AWS::EC2::KeyPair::KeyName to allow empty values
     Type: String
-    Description: "[optional] name of key pair to use for SSH access"
+    Description: "[optional] name of key pair to use for SSH access (must match existing key pair, if not empty)"
   IamInstanceProfile:
     Type: String
     Default: "aws-elasticbeanstalk-ec2-role"
     Description: "https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/iam-instanceprofile.html"
-  CertbotEmail:
-    Type: String
-    Description: "email address to use for certificate creation using certbot"
 
 Conditions:
   ApplicationNameNotSpecified: !Equals [!Ref ApplicationName, ""]
