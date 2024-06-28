@@ -3,10 +3,20 @@ AWSTemplateFormatVersion: "2010-09-09"
 Parameters:
   ApplicationName:
     Type: String
-    Description: "[optional] name of the application (leave empty to create new application)"
+    Description: "name of the application"
+    MinLength: 1
+    MaxLength: 100
+  ApplicationExists:
+    Type: String
+    Description: "if false, a new application is created"
+    Default: "true"
+    AllowedValues:
+      - "true"
+      - "false"
   CertbotEmail:
     Type: String
     Description: "email address to use for certificate creation using certbot"
+    MinLength: 5
   EnvironmentName:
     Type: String
     Description: "name of the environment (4-40 chars)"
@@ -22,14 +32,14 @@ Parameters:
     Description: "https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/iam-instanceprofile.html"
 
 Conditions:
-  ApplicationNameNotSpecified: !Equals [!Ref ApplicationName, ""]
+  NewApplication: !Equals [!Ref ApplicationExists, "false"]
   KeyNameSpecified: !Not [!Equals [!Ref KeyName, ""]]
 
 Resources:
   ApplicationTemp:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticbeanstalk-application.html
     Type: AWS::ElasticBeanstalk::Application
-    Condition: ApplicationNameNotSpecified
+    Condition: NewApplication
     Properties:
       Description: "Temporary application for testing single-instance HTTPS configuration"
 
@@ -37,7 +47,7 @@ Resources:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticbeanstalk-environment.html
     Type: AWS::ElasticBeanstalk::Environment
     Properties:
-      ApplicationName: !If [ApplicationNameNotSpecified, !Ref ApplicationTemp, !Ref ApplicationName]
+      ApplicationName: !If [NewApplication, !Ref ApplicationTemp, !Ref ApplicationName]
       EnvironmentName: !Ref EnvironmentName
       Description: "Temporary environment for testing single-instance HTTPS configuration"
       TemplateName: !If [KeyNameSpecified, !Ref ConfigTemplateWithKey, !Ref ConfigTemplateWithoutKey]
@@ -46,7 +56,7 @@ Resources:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticbeanstalk-configurationtemplate.html
     Type: AWS::ElasticBeanstalk::ConfigurationTemplate
     Properties:
-      ApplicationName: !If [ApplicationNameNotSpecified, !Ref ApplicationTemp, !Ref ApplicationName]
+      ApplicationName: !If [NewApplication, !Ref ApplicationTemp, !Ref ApplicationName]
       # https://docs.aws.amazon.com/elasticbeanstalk/latest/platforms/platforms-supported.html#platforms-supported.python
       SolutionStackName: "64bit Amazon Linux 2023 v4.1.0 running Python 3.11"
       # https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options-general.html
@@ -68,9 +78,9 @@ Resources:
     Type: AWS::ElasticBeanstalk::ConfigurationTemplate
     Condition: KeyNameSpecified
     Properties:
-      ApplicationName: !If [ApplicationNameNotSpecified, !Ref ApplicationTemp, !Ref ApplicationName]
+      ApplicationName: !If [NewApplication, !Ref ApplicationTemp, !Ref ApplicationName]
       SourceConfiguration:
-        ApplicationName: !If [ApplicationNameNotSpecified, !Ref ApplicationTemp, !Ref ApplicationName]
+        ApplicationName: !If [NewApplication, !Ref ApplicationTemp, !Ref ApplicationName]
         TemplateName: !Ref ConfigTemplateWithoutKey
       OptionSettings:
         - Namespace: "aws:autoscaling:launchconfiguration"
