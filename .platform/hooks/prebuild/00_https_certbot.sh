@@ -35,41 +35,19 @@ if [[ ! $CERTBOT_EMAIL ]]; then CERTBOT_EMAIL="me@example.org"; fi
 # could just use ${CERTBOT_EMAIL:-me@example.org} inline...
 certbot certonly --nginx -d $BEANSTALK_CNAME -m $CERTBOT_EMAIL --non-interactive --agree-tos
 
-# write nginx https config file
+# write nginx ssl_certificate directives for https_server.conf
 # this is necessary because os environment variables are not available in nginx server blocks
 # (https://stackoverflow.com/a/66013834)
-config_file_path="/var/app/staging/.platform/nginx/conf.d/https.conf"
-echo "writing nginx https config to $config_file_path"
-cat > $config_file_path << HERE
-# config adapted from https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/https-singleinstance-java.html
-# http://nginx.org/en/docs/http/configuring_https_servers.html
-server {
-    listen              443 ssl;
-    server_name  localhost;
-
-    ssl_certificate      /etc/letsencrypt/live/$BEANSTALK_CNAME/fullchain.pem;
-    ssl_certificate_key  /etc/letsencrypt/live/$BEANSTALK_CNAME/privkey.pem;
-
-    ssl_session_timeout  5m;
-
-    ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
-    ssl_prefer_server_ciphers   on;
-
-    location / {
-        # may need to adapt port (see nginx config on instance)
-        proxy_pass  http://localhost:8000;
-        proxy_set_header   Connection "";
-        proxy_http_version 1.1;
-        proxy_set_header        Host            \$host;
-        proxy_set_header        X-Real-IP       \$remote_addr;
-        proxy_set_header        X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header        X-Forwarded-Proto https;
-    }
-}
+file_path="/var/app/staging/.platform/nginx/certificate.paths"
+echo "writing certificate paths to $file_path"
+cat > $file_path << HERE
+# https://eff-certbot.readthedocs.io/en/stable/using.html#where-are-my-certificates
+ssl_certificate      /etc/letsencrypt/live/$BEANSTALK_CNAME/fullchain.pem;
+ssl_certificate_key  /etc/letsencrypt/live/$BEANSTALK_CNAME/privkey.pem;
 HERE
-if [ -s $config_file_path ]
+if [ -s $file_path ]
 then
   echo "https config created"
-  cat $config_file_path
+  cat $file_path
 else echo "failed to create https config"
 fi
