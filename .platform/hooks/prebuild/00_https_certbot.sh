@@ -13,6 +13,12 @@ BEANSTALK_CNAME=$(aws elasticbeanstalk describe-environments --environment-names
 && echo "beanstalk CNAME is $BEANSTALK_CNAME" || echo "failed to get beanstalk CNAME"
 # remove quotes
 BEANSTALK_CNAME=${BEANSTALK_CNAME//\"/}
+# make lowercase
+# https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
+# this is necessary, because certbot converts the domain to lowercase for the file path
+# ( although not mentioned in the docs)
+# https://eff-certbot.readthedocs.io/en/latest/using.html#where-are-my-certificates
+BEANSTALK_CNAME=${BEANSTALK_CNAME,,}
 
 # install certbot and nginx plugin directly from the AL2023 package repo
 # https://docs.aws.amazon.com/linux/al2023/release-notes/all-packages-AL2023.4.html
