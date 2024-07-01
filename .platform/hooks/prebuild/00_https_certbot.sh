@@ -32,19 +32,28 @@ certbot --version
 #   - .platform/nginx/conf.d/https.conf
 certbot certonly --nginx -d $BEANSTALK_CNAME -m $CERTBOT_EMAIL --non-interactive --agree-tos
 
-# write nginx ssl_certificate directives to include in https_server.conf
-# this is necessary because os environment variables are not available in nginx server blocks
+# write nginx server_name and ssl_certificate directives to include in https_server.conf
+# OS environment variables would be prefereable, but they are not available in nginx server blocks
 # (https://stackoverflow.com/a/66013834)
-file_path="/var/app/staging/.platform/nginx/certificate.paths"
-echo "writing certificate paths to $file_path"
-cat > $file_path << HERE
+server_name_path="/var/app/staging/.platform/nginx/server.name"
+cert_file_path="/var/app/staging/.platform/nginx/certificate.paths"
+echo "writing server name to $server_name_path"
+echo "server_name $BEANSTALK_CNAME;" > $server_name_path
+if [ -s $server_name_path ]
+then
+  echo "server.name file created:"
+  cat $server_name_path
+else echo "failed to create server.name file"
+fi
+echo "writing certificate paths to $cert_file_path"
+cat > $cert_file_path << HERE
 # https://eff-certbot.readthedocs.io/en/stable/using.html#where-are-my-certificates
 ssl_certificate      /etc/letsencrypt/live/$BEANSTALK_CNAME/fullchain.pem;
 ssl_certificate_key  /etc/letsencrypt/live/$BEANSTALK_CNAME/privkey.pem;
 HERE
-if [ -s $file_path ]
+if [ -s $cert_file_path ]
 then
-  echo "certificate.paths file created"
-  cat $file_path
+  echo "certificate.paths file created:"
+  cat $cert_file_path
 else echo "failed to create certificate.paths file"
 fi
