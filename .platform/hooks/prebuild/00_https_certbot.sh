@@ -44,7 +44,7 @@ ssl_certificate_key  /etc/letsencrypt/live/$BEANSTALK_CNAME/privkey.pem;
 HERE
 if [ -s $file_path ]
 then
-  echo "https config created"
+  echo "certificate.paths file created"
   cat $file_path
-else echo "failed to create https config"
+else echo "failed to create certificate.paths file"
 fi
