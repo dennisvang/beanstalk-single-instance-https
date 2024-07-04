@@ -13,6 +13,9 @@ Parameters:
     Description: "name of the application"
     MinLength: 1
     MaxLength: 100
+  ApplicationVersionS3Key:
+    Type: String
+    Description: "name of app version file in S3 bucket, e.g. as returned by `eb appversion --create`: temp/app-2e78-240701_194644561426.zip"
   CertbotEmail:
     Type: String
     Description: "email address to use for certificate creation using certbot"
@@ -36,6 +39,15 @@ Conditions:
   KeyNameSpecified: !Not [!Equals [!Ref KeyName, ""]]
 
 Resources:
+
+  ApplicationVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+      ApplicationName: !Ref ApplicationName
+      SourceBundle:
+        S3Bucket: !Sub elasticbeanstalk-${AWS::Region}-${AWS::AccountId}
+        S3Key: !Ref ApplicationVersionS3Key
+
   ApplicationTemp:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticbeanstalk-application.html
     Type: AWS::ElasticBeanstalk::Application
@@ -52,6 +64,7 @@ Resources:
       EnvironmentName: !Ref EnvironmentName
       Description: "Temporary environment for testing single-instance HTTPS configuration"
       TemplateName: !If [KeyNameSpecified, !Ref ConfigTemplateWithKey, !Ref ConfigTemplateWithoutKey]
+      VersionLabel: !Ref ApplicationVersion
 
   ConfigTemplateWithoutKey:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticbeanstalk-configurationtemplate.html
