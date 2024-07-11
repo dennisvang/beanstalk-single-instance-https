@@ -9,10 +9,8 @@ BEANSTALK_ENV_NAME=$(/opt/elasticbeanstalk/bin/get-config container -k environme
 # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/elasticbeanstalk/describe-environments.html#global-options
 # - the beanstalk EC2 role needs the "elasticbeanstalk:DescribeEnvironments" permission, otherwise this command returns empty
 # - we assume a single region here, but if that's an issue, we could specify `--region $REGION` in the command below, and obtain the value from an env property or from IMDSv2
-BEANSTALK_CNAME=$(aws elasticbeanstalk describe-environments --environment-names $BEANSTALK_ENV_NAME --query "Environments[0].CNAME") \
+BEANSTALK_CNAME=$(aws elasticbeanstalk describe-environments --environment-names $BEANSTALK_ENV_NAME --query "Environments[0].CNAME" --output text) \
 && echo "beanstalk CNAME is $BEANSTALK_CNAME" || echo "failed to get beanstalk CNAME"
-# remove quotes
-BEANSTALK_CNAME=${BEANSTALK_CNAME//\"/}
 # make lowercase
 # https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
 # this is necessary, because certbot converts the domain to lowercase for the file path ( although not mentioned in the docs)
